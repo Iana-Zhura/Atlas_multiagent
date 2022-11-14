@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # ceres-colver intermediate image
 FROM ubuntu:20.04 as ceres_solver_builder
 RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y \
