@@ -223,7 +223,9 @@ class TSDF():
             colors = cmap[label_viz,:]
         else:
             colors = None
-
+        colors = np.array(colors, dtype=np.int32)
+        vertex_attributes['semseg'] = np.array(vertex_attributes['semseg'], dtype=np.int32)
+        
         mesh = trimesh.Trimesh(
             vertices=verts, faces=faces, vertex_colors=colors,
             vertex_attributes=vertex_attributes, process=False)
