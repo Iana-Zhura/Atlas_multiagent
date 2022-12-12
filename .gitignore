@@ -1,3 +1,7 @@
 METAROOT/
 DATAROOT/
 results/
+*.pyc
+*.swp
+*.un
+*un~

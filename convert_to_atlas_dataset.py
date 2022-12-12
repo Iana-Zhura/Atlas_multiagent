@@ -1,8 +1,8 @@
 import os
 import re
+import glob
 
 import numpy as np
-import glob
 
 
 def create_dir(directory:str):
