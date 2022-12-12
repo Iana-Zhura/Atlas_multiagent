@@ -1,10 +1,8 @@
 import os
 import re
 
-import matplotlib.pyplot as plt
 import numpy as np
 import glob
-from scipy.spatial.transform import Rotation as R
 
 
 def create_dir(directory:str):
@@ -24,7 +22,7 @@ def parse_initial_dataset(path: str):
     for i, f in enumerate(files):
         
     #print(np.loadtxt(i))
-        with open(f) as f_input:
+        with open(f, 'r') as f_input:
             lines = f_input.readlines()
             
         # poses[i] = []
