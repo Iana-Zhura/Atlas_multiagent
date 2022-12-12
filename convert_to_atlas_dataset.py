@@ -41,6 +41,17 @@ def parse_initial_dataset(path: str):
     return angles, coords
 
 
+def parse_dataset(indir):
+    files = glob.glob(f'{indir}*[0-9].txt')
+    files = sorted(files, key=lambda x:int(re.findall("(\d+)",x)[-1]))
+
+    RT_arr = np.zeros((len(files), 4,4))
+
+    for i,file in enumerate(files):
+        RT_arr[i] = np.loadtxt(file)
+    return RT_arr
+
+
 def get_rot_matrix_from_euler(angles):
     # R = np.array(angles)
     # R, J = cv2.Rodrigues(R)
