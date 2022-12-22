@@ -3,6 +3,7 @@ import re
 import glob
 
 import numpy as np
+from scipy.spatial.transform import Rotation 
 
 
 def create_dir(directory:str):
@@ -14,9 +15,9 @@ def parse_initial_dataset(path: str):
     files = glob.glob(f'{path}*[0-9].txt')
     files = sorted(files, key=lambda x:int(re.findall("(\d+)",x)[-1]))
 
-    poses = np.zeros((len(files),6))
+    poses = np.zeros((len(files),7))
     coords = np.zeros((len(files),3))
-    angles = np.zeros((len(files),3))
+    angles = np.zeros((len(files),4))
 
 
     for i, f in enumerate(files):
@@ -50,19 +51,15 @@ def parse_dataset(indir):
     return RT_arr
 
 
-def get_rot_matrix_from_euler(angles):
+def get_rot_matrix_from_euler(angles:list):
     # R = np.array(angles)
     # R, J = cv2.Rodrigues(R)
     
-    tx = angles[0]
-    ty = angles[1] 
-    tz = angles[2]
     
-    Rx = [[1, 0, 0], [0, np.cos(tx), -np.sin(tx)], [0, np.sin(tx), np.cos(tx)]]
-    Ry = [[np.cos(ty), 0, np.sin(ty)], [0, 1, 0], [-np.sin(ty), 0, np.cos(ty)]]
-    Rz = [[np.cos(tz), -np.sin(tz), 0], [np.sin(tz), np.cos(tz), 0], [0, 0, 1]]
-    R = np.matmul(Rz, np.matmul(Ry, Rx))
-    return R
+    r = Rotation.from_quat([[angles[0], angles[1], angles[2], angles[3]]])
+
+    
+    return r.as_matrix()
 
 
 def get_rot_matrix_from_euler_nipun(angles:list):
@@ -87,9 +84,9 @@ def get_translation(coord):
 
     offset_base_to_rgb = np.array([10, 32, 13])/1000
     #From vicon link to base link
-    
+    offset_vicon_to_base = np.array([-46.8, -9.8, -21.4])/1000
     T = np.array(coord)
-    T = T*10**(-6)
+    T += offset_vicon_to_base
     T += offset_base_to_rgb
     return T
 
@@ -106,37 +103,54 @@ def prepare_data(indir:str, outdir:str):
 
     # TODO: load it from .yaml/.json file
     # Parameters for realsense D435i
-    fx = 615.671 # focal dist of cam lense [mm]
-    fy = 615.962 # 
-    cx = 328.001 # optical center
-    cy = 241.31
+
+
+    # fx = 1364.558 # focal dist of cam lense [mm]
+    # fy = 1364.338 # 
+    # cx = 640 # optical center
+    # cy = 310
+    fx = 602.4 # focal dist of cam lense [mm]
+    fy = 607.5 # 
+    cx = 317.08 # optical center
+    cy = 231.76
 
 
     angles, coord = parse_initial_dataset(indir) # get raw angle data
     
     # TODO: change it to Nipun's rotations
     tx = -90*(np.pi/180) # -90
-    ty = 0.776*(np.pi/180) # 0.776
+    ty = 0*(np.pi/180) # 0.776
     tz = -90*(np.pi/180) # -90
+    r = Rotation.from_rotvec([tx, ty, tz])
+    R_base_to_camera_color_opt = r.as_matrix()
     
     # Update: now we are not gona use it
-    R_base_to_camera_color_opt = get_rot_matrix_from_euler((tx, ty, tz))
+    # R_base_to_camera_color_opt = get_rot_matrix_from_euler((tx, ty, tz))
     
     # R_base_to_camera_color_opt = np.identity(3)
 
     create_dir(outdir + 'pose')
     for i, (ang, c) in enumerate(zip(angles, coord)):
         
-        R = get_rot_matrix_from_euler_nipun(ang)
-        R = R_base_to_camera_color_opt @ R
+        R = get_rot_matrix_from_euler(ang)
+        print(R)
+        # R = R_base_to_camera_color_opt @ R
         transform[0:3, 0:3] = R
        
         T = get_translation(c)
-        print(T)
+        # print(T)
         transform[0:3, 3] = T
         transform[3, 3] = 1
+        # transform = np.linalg.inv(transform)
         np.savetxt(f'{outdir}pose/{i+1:08}.txt', transform)
     
     cam_param= get_intrinsic(fx, fy, cx, cy)
     np.savetxt(f'{outdir}intrinsics.txt', cam_param)
     
+
+def main():
+    outdir = '/home/iana/anaconda3/Atlas/DATAROOT/sample/sample1/'
+    indir = '/home/iana/Atlas/dataset_last_hope/poses_raw/'
+    prepare_data(indir, outdir)
+   
+main()

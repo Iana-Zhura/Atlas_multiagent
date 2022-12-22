@@ -106,7 +106,8 @@ def main():
     disp = np.array([[1,1,1],[2,2,2]]) #
     ang = np.array([[30,0,0],[30,0,0]]) # [deg]
     # files_path = '/home/dendenmushi/projects/some_stuff/atlas_sample_poses/'
-    files_path = '/home/dendenmushi/projects/some_stuff/dataset_true-20221212T121046Z-001/dataset_true/drone_view/pose/'
+    # files_path = '/home/iana/Atlas/drone_view/pose/'
+    files_path = '/home/iana/sample/sample1/pose/'
 
     RT_arr = parse_dataset(files_path)
     rt_plt = RT_PLOT()

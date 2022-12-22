@@ -53,7 +53,7 @@ def process(info_file, model, num_frames, save_path, total_scenes_index, total_s
     else:
         # use default origin
         # assume floor is a z=0 so pad bottom a bit
-        offset = torch.tensor([0,0,-.5])
+        offset = torch.tensor([0,0,0])
     T = torch.eye(4)
     T[:3,3] = offset
 
