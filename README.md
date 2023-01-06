@@ -1,5 +1,5 @@
 # HyperSwarm: Multi-Agent Neural 3D Scene Reconstruction and Segmentation for Multi-Terrain Navigation of Quadruped Robot in Unknown Environment
-<img src='imgs/Drone.jpg' width="300" height="300">  <img src='imgs/HyperDog.jpg' width="300" height="300"/>
+<img src='imgs/Drone.jpg' width="350" height="250">               <img src='imgs/HyperDog.jpg' width="350" height="250"/>
 
 
 1. End-to-End 3D Scene Reconstruction from Posed Images (https://github.com/magicleap/Atlas)
