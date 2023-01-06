@@ -68,46 +68,6 @@ Next run our data preperation script which parses the raw data format into our c
 python prepare_data.py --path DATAROOT --path_meta METAROOT --dataset sample
 ```
 
-#### Scannet
-Download and extract Scannet by following the instructions provided at http://www.scan-net.org/.
-You also need to download the train/val/test splits and the label mapping from https://github.com/ScanNet/ScanNet (Benchmark Tasks).
-The directory structure should look like:
-```
-DATAROOT
-└───scannet
-│   └───scans
-│   |   └───scene0000_00
-│   |       └───color
-│   |       │   │   0.jpg
-│   |       │   │   1.jpg
-│   |       │   │   ...
-│   |       │   ...
-│   └───scans_test
-│   |       └───color
-│   |       │   │   0.jpg
-│   |       │   │   1.jpg
-│   |       │   │   ...
-│   |       │   ...
-|   └───scannetv2-labels.combined.tsv
-|   └───scannetv2_test.txt
-|   └───scannetv2_train.txt
-|   └───scannetv2_val.txt
-```
-Next run our data preperation script which parses the raw data format into our common json format (more info [here](atlas/datasets/README.md))
-(note that we store our derivered data in a seperate folder `METAROOT` to prevent pollution of the original data).
-This script also generates the ground truth TSDFs using TSDF Fusion.
-```
-python prepare_data.py --path DATAROOT --path_meta METAROOT --dataset scannet
-```
-This will take a while (a couple hours on 8 Quadro RTX 6000's)... if you have multiple gpus you can use the `--i` and `--n` flags to run in parallel
-```
-python prepare_data.py --path DATAROOT --path_meta METAROOT --dataset scannet --i 0 --n 4 &
-python prepare_data.py --path DATAROOT --path_meta METAROOT --dataset scannet --i 1 --n 4 &
-python prepare_data.py --path DATAROOT --path_meta METAROOT --dataset scannet --i 2 --n 4 &
-python prepare_data.py --path DATAROOT --path_meta METAROOT --dataset scannet --i 3 --n 4 &
-```
-Note that if you do not plan to train you can prepare just the test set using the `--test` flag.
-
 #### Your own data
 To use your own data you will need to put it in the same format as the sample data, or implement your own version of something like [sample.py](atlas/datasets/sample.py). After that you can modify `prepare_data.py` to also prepare your data.
 Note that the pretrained models are trained with Z-up metric coordinates and do not generalize to other coordinates (this means that the scale and 2 axes of the orientation ambiguity of SFM must be resolved prior to using the poses).
@@ -175,22 +135,7 @@ To watch training progress use
 tensorboard --logdir results/
 ```
 
-## COLMAP Baseline
-We also provide scripts to run inference and evaluataion using COLMAP. Note that you must install [COLMAP](https://colmap.github.io/) (which is included in our docker image).
 
-For inference on the sample scene use
-```
-python inference_colmap.py --pathout results/colmap --scenes METAROOT/sample/sample1/info.json
-```
-and for Scannet
-```
-python inference_colmap.py --pathout results/colmap
-```
-
-To evaluate Scannet use
-```
-python evaluate_colmap.py --pathout results/colmap
-```
 
 ## Citation
 
