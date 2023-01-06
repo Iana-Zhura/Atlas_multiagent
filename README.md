@@ -1,5 +1,5 @@
 # HyperSwarm: Multi-Agent Neural 3D Scene Reconstruction and Segmentation for Multi-Terrain Navigation of Quadruped Robot in Unknown Environment
-<img src='imgs/Drone.jpg' width="270" height="250"/>
+<img src='imgs/Drone.jpg' width="270" height="250">
 <img src='imgs/HyperDog.jpg' width="270" height="250"/>
 
 
