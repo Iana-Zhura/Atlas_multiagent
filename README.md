@@ -1,11 +1,12 @@
 # Multi-Agent Neural 3D Scene Reconstruction and Segmentation for Multi-Terrain Navigation of Quadruped Robot in Unknown Environment
+<img src='imgs/Drone.jpg'/>
+<img src='imgs/HyperDog.jpg'/>
 
 
-
-End-to-End 3D Scene Reconstruction from Posed Images (https://github.com/magicleap/Atlas)
+1. End-to-End 3D Scene Reconstruction from Posed Images (https://github.com/magicleap/Atlas)
 
 <img src='imgs/AtlasGIF.gif'/>
-<img src='imgs/figure1.jpg'/>
+
 
 ## Installation
 Docker image `Docker/Dockerfile` with all the dependencies.
