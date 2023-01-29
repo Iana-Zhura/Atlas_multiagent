@@ -51,7 +51,7 @@ def parse_dataset(indir):
     return RT_arr
 
 
-def get_rot_matrix_from_euler(angles:list):
+def get_rot_matrix_from_quatr(angles:list):
     # R = np.array(angles)
     # R, J = cv2.Rodrigues(R)
     
@@ -82,12 +82,12 @@ def get_rot_matrix_from_euler_nipun(angles:list):
 
 def get_translation(coord):
 
-    offset_base_to_rgb = np.array([10, 32, 13])/1000
+    # offset_base_to_rgb = np.array([10, 32, 13])/1000
     #From vicon link to base link
-    offset_vicon_to_base = np.array([-46.8, -9.8, -21.4])/1000
+    offset_vicon_to_base = np.array([8, 10, 32])/1000
     T = np.array(coord)
     T += offset_vicon_to_base
-    T += offset_base_to_rgb
+    # T += offset_base_to_rgb
     return T
 
 
@@ -109,48 +109,55 @@ def prepare_data(indir:str, outdir:str):
     # fy = 1364.338 # 
     # cx = 640 # optical center
     # cy = 310
-    fx = 602.4 # focal dist of cam lense [mm]
-    fy = 607.5 # 
-    cx = 317.08 # optical center
-    cy = 231.76
+    fx = 1367 # focal dist of cam lense [mm]
+    fy = 1365 # 
+    cx = 968 # optical center
+    cy = 550
 
 
     angles, coord = parse_initial_dataset(indir) # get raw angle data
-    
+    # coord = rescale(coord)
     # TODO: change it to Nipun's rotations
-    tx = -90*(np.pi/180) # -90
-    ty = 0*(np.pi/180) # 0.776
-    tz = -90*(np.pi/180) # -90
-    r = Rotation.from_rotvec([tx, ty, tz])
-    R_base_to_camera_color_opt = r.as_matrix()
-    
+    # tx = -90*(np.pi/180) # -90
+    # ty = 0*(np.pi/180) # 0.776
+    # tz = -90*(np.pi/180) # -90
+    # r = Rotation.from_rotvec([tx, ty, tz])
+    # R_base_to_camera_color_opt = r.as_matrix()
+    tx = -0.495
+    ty = 0.501
+    tz = -0.498
+    tw = 0.506
     # Update: now we are not gona use it
-    # R_base_to_camera_color_opt = get_rot_matrix_from_euler((tx, ty, tz))
+    R_base_to_camera_color_opt = get_rot_matrix_from_quatr((tx, ty, tz, tw))
     
     # R_base_to_camera_color_opt = np.identity(3)
 
     create_dir(outdir + 'pose')
     for i, (ang, c) in enumerate(zip(angles, coord)):
         
-        R = get_rot_matrix_from_euler(ang)
+        R = get_rot_matrix_from_quatr(ang)
         print(R)
-        # R = R_base_to_camera_color_opt @ R
+        R = R @ R_base_to_camera_color_opt
         transform[0:3, 0:3] = R
        
         T = get_translation(c)
+        # T = rescale(T)
         # print(T)
         transform[0:3, 3] = T
         transform[3, 3] = 1
-        # transform = np.linalg.inv(transform)
+        #transform = np.linalg.inv(transform)
         np.savetxt(f'{outdir}pose/{i+1:08}.txt', transform)
     
     cam_param= get_intrinsic(fx, fy, cx, cy)
     np.savetxt(f'{outdir}intrinsics.txt', cam_param)
+
+def rescale(coord): 
+    return coord/1.5
     
 
 def main():
     outdir = '/home/iana/anaconda3/Atlas/DATAROOT/sample/sample1/'
-    indir = '/home/iana/Atlas/dataset_last_hope/poses_raw/'
+    indir = '/home/iana/Atlas/dataset/poses_raw/'
     prepare_data(indir, outdir)
    
 main()
