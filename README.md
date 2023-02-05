@@ -65,9 +65,10 @@ results/release/semseg/test_final/sample1.npz // tsdf
 results/release/semseg/test_final/sample1_attributes.npz // vertex semseg
 ```
 
-To run on the entire Scannet test set use:
+To run on test dataset set use:
 ```
 python inference.py --model results/release/semseg/final.ckpt
 ```
-
+## Dataset Collection
+The first step needed for the 3D Scene Reconstruction is a collaborative dataset collection. The process of collecting images was carried out using Intel RealSense d435i cameras placed on UAV and quadruped robot respectively, while the positions of them were determined simultaneously by the Vicon Tracker System. In order to transfer information of current positions and images, a ROS2 framework for a multi-agent system was developed. Thus, every second an image was taken from the camera, as well as information about its current position. The dataset consists of 250 photographs needed to obtain a complete map of the premises. In general, two datasets were collected using the UAV and the HyperDog at once, and solely a quadruped robot.
 
