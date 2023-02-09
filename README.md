@@ -1,5 +1,5 @@
 # NeuroSwarm: Neural 3D Scene Reconstruction and Segmentation with Multi-agent UAV for Optimal Navigation of Quadruped Robot
-<img src='imgs/dog_with_drone.jpg' width="350" height="250">            
+<img src='imgs/dog_with_drone.jpg' width="600" height="300">            
 
 
 1. End-to-End 3D Scene Reconstruction from Posed Images (https://github.com/magicleap/Atlas)
