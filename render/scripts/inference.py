@@ -138,6 +138,7 @@ def main():
     model_name = os.path.splitext(os.path.split(args.model)[1])[0]
     save_path = os.path.join(model.cfg.LOG_DIR, model.cfg.TRAINER.NAME,
                              model.cfg.TRAINER.VERSION, 'test_'+model_name)
+    
     if args.num_frames>-1:
         save_path = '%s_%d'%(save_path, args.num_frames)
     os.makedirs(save_path, exist_ok=True)

@@ -1,6 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Bool
+from std_msgs.msg import String
 import os
 from subprocess import call
 from launch_ros.substitutions import FindPackageShare
@@ -8,8 +9,9 @@ from launch_ros.substitutions import FindPackageShare
 
 
 class Call_Atlas(Node):
-     
-     def __init__(self):
+
+    def __init__(self):
+        self.exit_code = 1
         super().__init__('call_atlas')
         self.subscription = self.create_subscription(
             Bool,
@@ -18,16 +20,30 @@ class Call_Atlas(Node):
             10)
         self.subscription  # prevent unused variable warning
 
-     def listener_callback(self, msg):
+        self.pub_render = self.create_publisher(String,'/atlas_response', 10)
+        timer_period = 0.2
+        self.timer = self.create_timer(timer_period, self.timer_callback)
+
+    
+
+    def listener_callback(self, msg):
+     
         path_dir = os.getcwd()
         self.get_logger().info('Rendering starts')
         # pkg_dir = FindPackageShare(package='render').find('render')
         # bash_dir = os.path.join(pkg_dir, 'scripts','inference.sh')
         if msg.data == True:
             os.chmod(os.path.join(path_dir, "src/render/scripts", "inference.sh"), 0o755)
-            call(os.path.join(path_dir, "src/render/scripts", "inference.sh"), shell=True)
-
-
+            self.exit_code = call(os.path.join(path_dir, "src/render/scripts", "inference.sh"), shell=True)
+            print(self.exit_code)
+     
+    def timer_callback(self):
+        
+        msg = String()
+        msg.data = "Render has been generated succesfully!"
+       
+        if self.exit_code == 0 : 
+            self.pub_render.publish(msg)
 
 
 
