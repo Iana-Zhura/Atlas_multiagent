@@ -1,6 +1,6 @@
 #!/bin/bash 
 
-source /home/iana/anaconda3/bin/activate atlas
-# conda activate atlas
-python3 ~/multi_agent_ws/src/render/render/scripts/prepare_data.py -s --path DATAROOT --path_meta METAROOT --dataset sample
-python3 ~/multi_agent_ws/src/render/render/scripts/inference.py -s --model results/release/semseg/final.ckpt --scenes METAROOT/sample/sample1/info.json --voxel_dim 208 208 80
+source ~/anaconda3/etc/profile.d/conda.sh
+conda activate atlas
+python3 -s ~/anaconda3/Atlas/src/render/scripts/prepare_data.py --path ~/anaconda3/Atlas/src/render/scripts/DATAROOT --path_meta ~/anaconda3/Atlas/src/render/scripts/METAROOT --dataset sample
+python3 -s ~/anaconda3/Atlas/src/render/scripts/inference.py --model ~/anaconda3/Atlas/src/render/scripts/results/release/semseg/final.ckpt --scenes ~/anaconda3/Atlas/src/render/scripts/METAROOT/sample/sample1/info.json --voxel_dim 248 248 96

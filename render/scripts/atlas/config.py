@@ -42,7 +42,7 @@ CN = CfgNode
 
 
 _C = CN()
-_C.LOG_DIR = "results"
+_C.LOG_DIR = "~/anaconda3/Atlas/src/render/scripts/results"
 _C.VOXEL_SIZE = 1
 _C.VOXEL_DIM_TRAIN = [160,160,64]
 _C.VOXEL_DIM_VAL = [256,256,96]

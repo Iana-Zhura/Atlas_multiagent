@@ -24,8 +24,8 @@ class Call_Atlas(Node):
         # pkg_dir = FindPackageShare(package='render').find('render')
         # bash_dir = os.path.join(pkg_dir, 'scripts','inference.sh')
         if msg.data == True:
-            os.chmod(os.path.join(path_dir, "src/render/render/scripts", "inference.sh"), 0o755)
-            call(os.path.join(path_dir, "src/render/render/scripts", "inference.sh"), shell=True)
+            os.chmod(os.path.join(path_dir, "src/render/scripts", "inference.sh"), 0o755)
+            call(os.path.join(path_dir, "src/render/scripts", "inference.sh"), shell=True)
 
 
 

@@ -156,8 +156,8 @@ def rescale(coord):
     
 
 def main():
-    outdir = '/home/iana/anaconda3/Atlas/DATAROOT/sample/sample1/'
-    indir = '/home/iana/Atlas/dataset/poses_raw/'
+    outdir = '/home/iana/anaconda3/Atlas/src/render/scripts/DATAROOT/sample/sample1/'
+    indir = '/home/iana/Atlas/dataset_drone_dog/poses_raw/'
     prepare_data(indir, outdir)
    
 main()
