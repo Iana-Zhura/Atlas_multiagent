@@ -131,28 +131,31 @@ def prepare_data(indir:str, outdir:str):
     R_base_to_camera_color_opt = get_rot_matrix_from_quatr((tx, ty, tz, tw))
     
     # R_base_to_camera_color_opt = np.identity(3)
-
+    min_coord = np.min(coord, axis=0)
+    print(min_coord)
     create_dir(outdir + 'pose')
     for i, (ang, c) in enumerate(zip(angles, coord)):
         
         R = get_rot_matrix_from_quatr(ang)
-        print(R)
+        # print(R)
         R = R @ R_base_to_camera_color_opt
         transform[0:3, 0:3] = R
        
         T = get_translation(c)
-        # T = rescale(T)
-        # print(T)
-        transform[0:3, 3] = T
+        # T = rescale(T, 0.25)
+        print(T)
+        transform[0:3, 3] = T 
+        transform[0:2, 3] += 4
         transform[3, 3] = 1
+        transform[2, 3] += 0.3
         #transform = np.linalg.inv(transform)
         np.savetxt(f'{outdir}pose/{i+1:08}.txt', transform)
     
     cam_param= get_intrinsic(fx, fy, cx, cy)
     np.savetxt(f'{outdir}intrinsics.txt', cam_param)
 
-def rescale(coord): 
-    return coord/1.5
+def rescale(coord, scale): 
+    return coord*scale
     
 
 def main():
@@ -161,3 +164,13 @@ def main():
     prepare_data(indir, outdir)
    
 main()
+
+
+
+
+
+
+
+
+
+
