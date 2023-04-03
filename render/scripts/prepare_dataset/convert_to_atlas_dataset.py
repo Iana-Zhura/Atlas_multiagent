@@ -34,7 +34,19 @@ def parse_initial_dataset(path: str):
             numbers += m 
         poses[i] = numbers
         
+   
     coords = poses[:,:3]
+    
+    x_min = np.min(coords[:,0])
+    y_min = np.min(coords[:,1])
+    z_min = np.min(coords[:,2])
+    coords_min = coords.min(axis=0)
+    # print(x_min)
+    coords[:,0] = coords[:,0] - x_min + 2.5
+    coords[:,1] = coords[:,1] - y_min  + 2.5
+    coords[:,2] = coords[:,2] + 1
+    # coords = coords + 2
+    print(np.where(coords < 0)[0])
     angles = poses[:,3:]
 
     return angles, coords
@@ -82,12 +94,12 @@ def get_rot_matrix_from_euler_nipun(angles:list):
 
 def get_translation(coord):
 
-    # offset_base_to_rgb = np.array([10, 32, 13])/1000
+    offset_base_to_rgb = np.array([10, 32, 13])/1000
     #From vicon link to base link
-    offset_vicon_to_base = np.array([8, 10, 32])/1000
+    offset_vicon_to_base = np.array([-8, 0, 0])/1000
     T = np.array(coord)
     T += offset_vicon_to_base
-    # T += offset_base_to_rgb
+    T += offset_base_to_rgb
     return T
 
 
@@ -134,9 +146,9 @@ def prepare_data(indir:str, outdir:str):
 
     create_dir(outdir + 'pose')
     for i, (ang, c) in enumerate(zip(angles, coord)):
-        
+        print(i) 
         R = get_rot_matrix_from_quatr(ang)
-        print(R)
+        # print(R)
         R = R @ R_base_to_camera_color_opt
         transform[0:3, 0:3] = R
        
@@ -157,7 +169,9 @@ def rescale(coord):
 
 def main():
     outdir = '/home/iana/anaconda3/Atlas/src/render/scripts/DATAROOT/sample/sample1/'
-    indir = '/home/iana/Atlas/dataset_drone_dog/poses_raw/'
+    # outdir = '/home/iana/temp_dataset/poses/'
+    indir = '/home/iana/Atlas/dataset_drop_mats_only/poses_raw/'
+    # indir = '/home/iana/temp_dataset/poses/'
     prepare_data(indir, outdir)
    
 main()

@@ -19,11 +19,16 @@ import os
 
 import numpy as np
 import torch
+from trimesh import viewer
 
 from atlas.data import SceneDataset, parse_splits_list
 from atlas.model import VoxelNet
 import atlas.transforms as transforms
-
+import pyglet
+import PIL.Image as Image
+import time
+import threading
+import io
 
 def process(info_file, model, num_frames, save_path, total_scenes_index, total_scenes_count):
     """ Run the netork on a scene and save output
@@ -41,7 +46,7 @@ def process(info_file, model, num_frames, save_path, total_scenes_index, total_s
     dataset = SceneDataset(info_file, voxel_sizes=[voxel_scale],
                            voxel_types=model.voxel_types, num_frames=num_frames)
 
-    # compute voxel origin
+    # compute voxel origin 
     if 'file_name_vol_%02d'%voxel_scale in dataset.info:
         # compute voxel origin from ground truth
         tsdf_trgt = dataset.get_tsdf()['vol_%02d'%voxel_scale]
@@ -72,40 +77,73 @@ def process(info_file, model, num_frames, save_path, total_scenes_index, total_s
     model.initialize_volume()
     torch.cuda.empty_cache()
 
+    # scene_ = trimesh.Scene()
+   
     for j, d in enumerate(dataloader):
-
+        
         # logging progress
         if j%25==0:
             print(total_scenes_index,
-                  total_scenes_count,
-                  dataset.info['dataset'],
-                  scene,
-                  j,
-                  len(dataloader)
+                total_scenes_count,
+                dataset.info['dataset'],
+                scene,
+                j,
+                len(dataloader)
             )
 
         model.inference1(d['projection'].unsqueeze(0).cuda(),
-                         image=d['image'].unsqueeze(0).cuda())
-    outputs, losses = model.inference2()
+                        image=d['image'].unsqueeze(0).cuda())
+        
+        if j%20 == 0:
 
-    tsdf_pred = model.postprocess(outputs)[0]
+            # v.render_lock.acquire()
+            outputs, losses = model.inference2()
+        
+            tsdf_pred = model.postprocess(outputs)[0]
+            tsdf_pred.origin = offset.view(1,3).cuda()
 
-    # TODO: set origin in model... make consistent with offset above?
-    tsdf_pred.origin = offset.view(1,3).cuda()
-   
+            if 'semseg' in tsdf_pred.attribute_vols:
+                mesh_pred = tsdf_pred.get_mesh('semseg')
+                # mesh_pred.viewer.notebook.scene_to_html(mesh_pred.Scene)
+        
 
-    if 'semseg' in tsdf_pred.attribute_vols:
-        mesh_pred = tsdf_pred.get_mesh('semseg')
+                # save vertex attributes seperately since trimesh doesn't
+                np.savez(os.path.join(save_path, '%s_attributes.npz'%scene), 
+                    **mesh_pred.vertex_attributes)
+            else:
+                mesh_pred = tsdf_pred.get_mesh()
 
-        # save vertex attributes seperately since trimesh doesn't
-        np.savez(os.path.join(save_path, '%s_attributes.npz'%scene), 
-                **mesh_pred.vertex_attributes)
-    else:
-        mesh_pred = tsdf_pred.get_mesh()
 
-    tsdf_pred.save(os.path.join(save_path, '%s.npz'%scene))
-    mesh_pred.export(os.path.join(save_path, '%s.ply' % scene))
-    mesh_pred.export(os.path.join(save_path, '%s.obj' % scene))
+            mesh_pred = tsdf_pred.get_mesh('semseg')
+            tsdf_pred.save(os.path.join(save_path, '%s.npz'%scene))
+            mesh_pred.export(os.path.join(save_path, '%s.ply' % scene))
+            mesh_pred.export(os.path.join(save_path, '%s.obj' % scene)) 
+            mesh_pred.show()
+
+        
+            
+
+    # tsdf_pred = model.postprocess(outputs)[0]
+
+    # # TODO: set origin in model... make consistent with offset above?
+    # tsdf_pred.origin = offset.view(1,3).cuda()
+
+
+    # if 'semseg' in tsdf_pred.attribute_vols:
+    #     mesh_pred = tsdf_pred.get_mesh('semseg')
+    #     # mesh_pred.viewer.notebook.scene_to_html(mesh_pred.Scene)
+        
+
+    #     # save vertex attributes seperately since trimesh doesn't
+    #     np.savez(os.path.join(save_path, '%s_attributes.npz'%scene), 
+    #             **mesh_pred.vertex_attributes)
+    # else:
+    #     mesh_pred = tsdf_pred.get_mesh()
+        
+
+    # tsdf_pred.save(os.path.join(save_path, '%s.npz'%scene))
+    # mesh_pred.export(os.path.join(save_path, '%s.ply' % scene))
+    # mesh_pred.export(os.path.join(save_path, '%s.obj' % scene))
 
 
 
@@ -121,6 +159,7 @@ def main():
                         help="override voxel dim")
     args = parser.parse_args()
 
+   
     # get all the info_file.json's from the command line
     # .txt files contain a list of info_file.json's
     info_files = parse_splits_list(args.scenes)
@@ -137,7 +176,7 @@ def main():
 
     model_name = os.path.splitext(os.path.split(args.model)[1])[0]
     save_path = os.path.join(model.cfg.LOG_DIR, model.cfg.TRAINER.NAME,
-                             model.cfg.TRAINER.VERSION, 'test_'+model_name)
+                            model.cfg.TRAINER.VERSION, 'test_'+model_name)
     
     if args.num_frames>-1:
         save_path = '%s_%d'%(save_path, args.num_frames)
