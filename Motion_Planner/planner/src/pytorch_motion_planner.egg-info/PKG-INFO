@@ -1,0 +1,15 @@
+Metadata-Version: 1.2
+Name: pytorch-motion-planner
+Version: 0.0.0
+Summary: The pytorch_motion_planner package
+Home-page: UNKNOWN
+Author: 
+Maintainer: Mikhail Kurenkov
+Maintainer-email: mikhail.kurenkov@skoltech.ru
+License: TODO
+Description: UNKNOWN
+Platform: UNKNOWN
+Requires: numpy
+Requires: PyYAML
+Requires: scipy
+Requires: pytorch

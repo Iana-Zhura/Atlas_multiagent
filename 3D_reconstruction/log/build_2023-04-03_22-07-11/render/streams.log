@@ -1,0 +1,41 @@
+[0.692s] Invoking command in '/home/iana/anaconda3/Atlas/src/3D_reconstruction': PYTHONPATH=/home/iana/anaconda3/Atlas/src/3D_reconstruction/install/render/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base build/render build --build-base /home/iana/anaconda3/Atlas/src/3D_reconstruction/build/render/build install --prefix /home/iana/anaconda3/Atlas/src/3D_reconstruction/install/render --record /home/iana/anaconda3/Atlas/src/3D_reconstruction/build/render/install.log --single-version-externally-managed
+[0.908s] running egg_info
+[0.908s] creating build/render/render.egg-info
+[0.909s] writing build/render/render.egg-info/PKG-INFO
+[0.909s] writing dependency_links to build/render/render.egg-info/dependency_links.txt
+[0.909s] writing entry points to build/render/render.egg-info/entry_points.txt
+[0.909s] writing requirements to build/render/render.egg-info/requires.txt
+[0.909s] writing top-level names to build/render/render.egg-info/top_level.txt
+[0.912s] writing manifest file 'build/render/render.egg-info/SOURCES.txt'
+[0.938s] reading manifest file 'build/render/render.egg-info/SOURCES.txt'
+[0.939s] writing manifest file 'build/render/render.egg-info/SOURCES.txt'
+[0.939s] running build
+[0.939s] running build_py
+[0.939s] creating /home/iana/anaconda3/Atlas/src/3D_reconstruction/build/render/build
+[0.939s] creating /home/iana/anaconda3/Atlas/src/3D_reconstruction/build/render/build/lib
+[0.939s] creating /home/iana/anaconda3/Atlas/src/3D_reconstruction/build/render/build/lib/render
+[0.939s] copying render/bool_publisher.py -> /home/iana/anaconda3/Atlas/src/3D_reconstruction/build/render/build/lib/render
+[0.939s] copying render/__init__.py -> /home/iana/anaconda3/Atlas/src/3D_reconstruction/build/render/build/lib/render
+[0.939s] copying render/call_inference.py -> /home/iana/anaconda3/Atlas/src/3D_reconstruction/build/render/build/lib/render
+[0.940s] running install
+[0.940s] running install_lib
+[0.941s] creating /home/iana/anaconda3/Atlas/src/3D_reconstruction/install/render/lib/python3.8/site-packages/render
+[0.941s] copying /home/iana/anaconda3/Atlas/src/3D_reconstruction/build/render/build/lib/render/bool_publisher.py -> /home/iana/anaconda3/Atlas/src/3D_reconstruction/install/render/lib/python3.8/site-packages/render
+[0.941s] copying /home/iana/anaconda3/Atlas/src/3D_reconstruction/build/render/build/lib/render/__init__.py -> /home/iana/anaconda3/Atlas/src/3D_reconstruction/install/render/lib/python3.8/site-packages/render
+[0.941s] copying /home/iana/anaconda3/Atlas/src/3D_reconstruction/build/render/build/lib/render/call_inference.py -> /home/iana/anaconda3/Atlas/src/3D_reconstruction/install/render/lib/python3.8/site-packages/render
+[0.941s] byte-compiling /home/iana/anaconda3/Atlas/src/3D_reconstruction/install/render/lib/python3.8/site-packages/render/bool_publisher.py to bool_publisher.cpython-38.pyc
+[0.942s] byte-compiling /home/iana/anaconda3/Atlas/src/3D_reconstruction/install/render/lib/python3.8/site-packages/render/__init__.py to __init__.cpython-38.pyc
+[0.943s] byte-compiling /home/iana/anaconda3/Atlas/src/3D_reconstruction/install/render/lib/python3.8/site-packages/render/call_inference.py to call_inference.cpython-38.pyc
+[0.943s] running install_data
+[0.943s] creating /home/iana/anaconda3/Atlas/src/3D_reconstruction/install/render/share/ament_index
+[0.943s] creating /home/iana/anaconda3/Atlas/src/3D_reconstruction/install/render/share/ament_index/resource_index
+[0.944s] creating /home/iana/anaconda3/Atlas/src/3D_reconstruction/install/render/share/ament_index/resource_index/packages
+[0.944s] copying resource/render -> /home/iana/anaconda3/Atlas/src/3D_reconstruction/install/render/share/ament_index/resource_index/packages
+[0.944s] copying package.xml -> /home/iana/anaconda3/Atlas/src/3D_reconstruction/install/render/share/render
+[0.944s] running install_egg_info
+[0.945s] Copying build/render/render.egg-info to /home/iana/anaconda3/Atlas/src/3D_reconstruction/install/render/lib/python3.8/site-packages/render-0.0.0-py3.8.egg-info
+[0.946s] running install_scripts
+[0.959s] Installing call_inference script to /home/iana/anaconda3/Atlas/src/3D_reconstruction/install/render/lib/render
+[0.959s] Installing talker script to /home/iana/anaconda3/Atlas/src/3D_reconstruction/install/render/lib/render
+[0.959s] writing list of installed files to '/home/iana/anaconda3/Atlas/src/3D_reconstruction/build/render/install.log'
+[0.976s] Invoked command in '/home/iana/anaconda3/Atlas/src/3D_reconstruction' returned '0': PYTHONPATH=/home/iana/anaconda3/Atlas/src/3D_reconstruction/install/render/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base build/render build --build-base /home/iana/anaconda3/Atlas/src/3D_reconstruction/build/render/build install --prefix /home/iana/anaconda3/Atlas/src/3D_reconstruction/install/render --record /home/iana/anaconda3/Atlas/src/3D_reconstruction/build/render/install.log --single-version-externally-managed

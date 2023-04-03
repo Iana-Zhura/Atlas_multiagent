@@ -1,0 +1,4 @@
+[console_scripts]
+call_inference = render.call_inference:main
+talker = render.bool_publisher:main
+

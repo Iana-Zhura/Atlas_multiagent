@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="vis" default="false"/>
+    <arg name="visualization_config_path" default="$(find hermesbot_simulation)/rviz/navigation_test.rviz"/>
+
+    <node pkg="hermesbot_simulation" type="movement_simulation_node.py" name="movement_simulation_node"
+          output="screen"/>
+
+    <node pkg="hermesbot_simulation" type="map_simulation_node.py" name="map_simulation_node" output="screen">
+        <param name="map_radius" value="1."/>
+    </node>
+
+    <node pkg="hermesbot_simulation" type="point_cloud_simulation_node.py" name="point_cloud_simulation_node"
+          output="screen">
+        <param name="point_cloud_radius" value="1."/>
+    </node>
+
+    <node pkg="hermesbot_simulation" name="navigation_test" type="base_navigation_test.py" output="screen">
+        <param value="$(find hermesbot_simulation)/test_maps" name="test_maps_directory"/>
+    </node>
+
+    <node pkg="hermesbot_collision_checker" type="velocity_limiter_node.py" name="velocity_limiter_node"
+          output="screen"/>
+
+    <node pkg="pytorch_motion_planner" name="pytorch_motion_planner" type="pytorch_motion_planner_node.py"
+    output="screen">
+    </node>
+
+    <node pkg="hermesbot_navigation" name="path_follower" type="path_follower_node.py" output="screen">
+        <remap from="cmd_vel" to="/unsafe_debug_cmd_vel"/>
+    </node>
+
+    <group if="$(arg vis)">
+        <node pkg="rviz" type="rviz" name="rviz" args="-d $(arg visualization_config_path)"/>
+    </group>
+</launch>
