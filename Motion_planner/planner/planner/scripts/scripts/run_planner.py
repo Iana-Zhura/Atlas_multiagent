@@ -3,7 +3,7 @@ import numpy as np
 import torch
 from matplotlib import pyplot as plt
 from pytorch_lightning.utilities import AttributeDict
-
+import time
 import sys
 sys.path.append('/home/iana/pytorch-motion-planner')
 sys.path.append('/home/iana/pytorch-motion-planner/neural_field_optimal_planner')
@@ -17,14 +17,14 @@ from neural_field_optimal_planner.plotting_utils import *
 from neural_field_optimal_planner.test_environment_builder import TestEnvironmentBuilder
 from neural_field_optimal_planner.trajectory_3D import trajectory_to_3D
 from neural_field_optimal_planner.trajectory_3D import calculate_path
-from neural_field_optimal_planner.trajectory_2D import trajectory_to_2D
+
 
 torch.random.manual_seed(100)
 np.random.seed(400)
 
 planner_parameters = AttributeDict(
     device="cpu",
-    trajectory_length=100,
+    trajectory_length=50,
     collision_model=AttributeDict(
         mean=0,
         sigma=1,
@@ -43,7 +43,7 @@ planner_parameters = AttributeDict(
         betas=(0.9, 0.9)
     ),
     trajectory_optimizer=AttributeDict(
-        lr=1e-2,
+        lr=3.5e-2,
         betas=(0.9, 0.9)
     ),
     planner=AttributeDict(
@@ -74,7 +74,7 @@ robot_max_h = TestEnvironmentBuilder().map.ROB_MAX_H
 obstacle_points = test_environment.obstacle_points
 # collision_checker = CircleDirectedCollisionChecker(0.3, (0, 3, 0, 3))
 # collision_checker = RectangleCollisionChecker((-0.2, 0.2, -0.2, 0.2), (0, 3, 0, 3))
-collision_checker = RectangleCollisionChecker((-0.05, 0.05, -0.10, 0.10), (0, 6, 0, 6))
+collision_checker = RectangleCollisionChecker((-0.05, 0.05, -0.05, 0.05), (0, 5, 0, 5))
 collision_checker.update_obstacle_points(test_environment.obstacle_points)
 
 planner = PlannerFactory.make_constrained_onf_planner(collision_checker, planner_parameters)
@@ -87,17 +87,51 @@ device = planner._device
 collision_model = planner._collision_model
 fig = plt.figure(1, dpi=200)
 
+def distance(x1: float, y1: float, x2: float, y2: float) -> float:
+    d = np.sqrt(np.power((x2 - x1), 2) + np.power((y2 - y1), 2))
+    return d
+
+
+delta = 20
+start = time.time()
+count = 0
 for i in range(1000):
+    
     planner.step()
-    trajectory = planner.get_path()
-    # print(trajectory.shape)
+    trajectory = planner.get_path() 
+    
     fig.clear()
     prepare_figure(trajectory_boundaries)
-    trajectory, path_color = trajectory_to_3D(trajectory, obs_map, voxel_size, robot_max_h)
+    trajectory_3D, path_color = trajectory_to_3D(trajectory, obs_map, voxel_size, robot_max_h)
     # path_color = trajectory_to_2D(trajectory, obs_map, voxel_size, robot_max_h)
-    dist_travel = calculate_path(trajectory, 0)
-    print("The distance:", dist_travel)
-    plot_planner_data(trajectory, path_color, collision_model, trajectory_boundaries, obstacle_points, device=device)
+    # path_length = calculate_path(trajectory, 0)
+    # print("The distance:", path_length)
+    plot_planner_data(trajectory_3D, path_color, collision_model, trajectory_boundaries, obstacle_points, device=device)
     # plot_nerf_opt_planner(planner)
     # plot_collision_positions(planner.checked_positions, planner.truth_collision)
     plt.pause(0.01)
+    
+    if i != 0:
+       
+        for j in range(delta,len(trajectory)-delta):
+            
+            dist = distance(trajectory[j][0], trajectory[j][1],
+                    prev_trajectory[j][0], prev_trajectory[j][1])
+            
+            if dist <= 0.0002 and any(path_color) != "red":
+                count += 1
+                print("Distance:", dist)
+                if count > 50:  
+                    break
+
+        else:
+            prev_trajectory = trajectory
+            continue
+        prev_trajectory = trajectory
+        print(i)
+        print(f"Planner run took: {time.time() - start} seconds")
+        break
+    else:
+        prev_trajectory = trajectory
+         
+        

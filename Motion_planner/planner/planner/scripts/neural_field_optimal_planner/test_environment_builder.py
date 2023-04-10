@@ -6,8 +6,8 @@ from extract_obs import OBSTACLE_MAP
 
 class TestEnvironmentBuilder(object):
     def __init__(self) -> None:
-        path_ply = '/home/iana/results-drone-dog/sample1.ply'
-        path_npz = '/home/iana/results-drone-dog/sample1.npz'
+        path_ply = '~/anaconda3/Atlas/results/release/semseg/test_final/sample1.ply'
+        path_npz = '~/anaconda3/Atlas/results/release/semseg/test_final/sample1.npz'
         self.map = OBSTACLE_MAP(path_ply, path_npz)
 
 
@@ -95,6 +95,7 @@ class TestEnvironmentBuilder(object):
         goal_point = np.array([4.4, 4.8, 0], dtype=np.float32)
         start_point = np.array([4, 1.8, 0], dtype=np.float32)
         trajectory_boundaries = (1., 8, 1., 8)
+        # trajectory_boundaries = (0.1, 3.1, 0.1, 3.1)
         return TestEnvironment(start_point, goal_point, trajectory_boundaries,
                                TestEnvironmentBuilder.map_obstacle_points_3D(self))
 

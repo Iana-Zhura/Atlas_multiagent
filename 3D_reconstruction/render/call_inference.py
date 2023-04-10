@@ -40,9 +40,10 @@ class Call_Atlas(Node):
     def timer_callback(self):
         
         msg = Bool()
-        msg.data = True
+        msg.data = False
        
         if self.exit_code == 0 : 
+            msg.data = True
             self.pub_render.publish(msg)
 
 

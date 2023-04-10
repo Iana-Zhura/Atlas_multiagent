@@ -20,8 +20,10 @@ def trajectory_to_3D(plotted_trajectory, obs_map, voxel_size, robot_max_h):
         z = obs_map[y, x]
         path.append((x*voxel_size, y*voxel_size, point[2], z))
         if z == -1:
+          
           point_color.append('red')
         else:
+          path.append((x*voxel_size, y*voxel_size, point[2], z))
           point_color.append('yellow')
     else:
         z = robot_max_h
