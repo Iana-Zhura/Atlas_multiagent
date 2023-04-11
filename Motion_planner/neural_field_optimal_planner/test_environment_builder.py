@@ -1,16 +1,23 @@
 import numpy as np
 
 from .test_environment import TestEnvironment
-from extract_obs import OBSTACLE_MAP
+from neural_field_optimal_planner.extract_obs import OBSTACLE_MAP
+import os
+from glob import glob
+
+cur_path = os.getcwd()
 
 
 class TestEnvironmentBuilder(object):
     def __init__(self) -> None:
-        path_ply = '~/anaconda3/Atlas/results/release/semseg/test_final/sample1.ply'
-        path_npz = '~/anaconda3/Atlas/results/release/semseg/test_final/sample1.npz'
-        self.map = OBSTACLE_MAP(path_ply, path_npz)
+        self.path_ply = 'results/release/semseg/test_final/sample1.ply'
+        self.path_npz = 'results/release/semseg/test_final/sample1.npz'
+        self.map = OBSTACLE_MAP(self.path_ply, self.path_npz)
 
-
+    
+    def get_map(self):
+        return self.map.obstacle_map_adaptive_h, self.map.voxel_size, self.map.ROB_MAX_H
+    
     @staticmethod
     def make_test_environment():
         goal_point = np.array([2.5, 2.5], dtype=np.float32)
@@ -26,7 +33,7 @@ class TestEnvironmentBuilder(object):
         collision_points2 = collision_points1.copy()
         collision_points2[:, 0] = 1.85
         collision_points2[:, 1] += 1
-        print(collision_points1)
+        # print(collision_points1)
         return np.concatenate([collision_points1, collision_points2], axis=0)
 
 
@@ -90,10 +97,14 @@ class TestEnvironmentBuilder(object):
         return TestEnvironment(start_point, goal_point, trajectory_boundaries,
                                TestEnvironmentBuilder._car_obstacle_points())
 
-    
+    # @staticmethod
     def make_dog_environment(self):
-        goal_point = np.array([4.4, 4.8, 0], dtype=np.float32)
-        start_point = np.array([4, 1.8, 0], dtype=np.float32)
+        # goal_point = np.array([4.4, 4.8, 0], dtype=np.float32)
+        # start_point = np.array([4, 1.8, 0], dtype=np.float32)
+        start_point = np.array([4.0, 2.0, 0], dtype=np.float32)
+        goal_point = np.array([3.6, 3.6, 0], dtype=np.float32)
+        print("______________________________________________")
+        print("The start point is:",start_point)
         trajectory_boundaries = (1., 8, 1., 8)
         # trajectory_boundaries = (0.1, 3.1, 0.1, 3.1)
         return TestEnvironment(start_point, goal_point, trajectory_boundaries,

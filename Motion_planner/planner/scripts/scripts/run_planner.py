@@ -5,10 +5,12 @@ from matplotlib import pyplot as plt
 from pytorch_lightning.utilities import AttributeDict
 import time
 import sys
-sys.path.append('/home/iana/pytorch-motion-planner')
-sys.path.append('/home/iana/pytorch-motion-planner/neural_field_optimal_planner')
-sys.path.append('/home/iana/pytorch-motion-planner/neural_field_optimal_planner/astar')
-sys.path.append('/home/iana/pytorch-motion-planner/neural_field_optimal_planner/utils')
+
+import neural_field_optimal_planner
+# sys.path.insert(1,'~/anaconda3/Atlas/install/planner/lib/python3.8/site-packages/planner/scripts/neural_field_optimal_planner')
+# sys.path.append('~/anaconda3/Atlas/src/Motion_planner/planner/planner/scripts/neural_field_optimal_planner')
+# sys.path.append('~/anaconda3/Atlas/src/Motion_planner/planner/planner/scripts/neural_field_optimal_planner/astar')
+# sys.path.append('~/anaconda3/Atlas/src/Motion_planner/planner/planner/scripts/neural_field_optimal_planner/utils')
 
 
 from neural_field_optimal_planner.collision_checker import CircleDirectedCollisionChecker, RectangleCollisionChecker
@@ -43,7 +45,7 @@ planner_parameters = AttributeDict(
         betas=(0.9, 0.9)
     ),
     trajectory_optimizer=AttributeDict(
-        lr=3.5e-2,
+        lr=1e-2,
         betas=(0.9, 0.9)
     ),
     planner=AttributeDict(
@@ -66,15 +68,23 @@ planner_parameters = AttributeDict(
 )
 
 
-test_environment = TestEnvironmentBuilder().make_dog_environment()
-obs_map = TestEnvironmentBuilder().map.obstacle_map_adaptive_h
-voxel_size = TestEnvironmentBuilder().map.voxel_size
-robot_max_h = TestEnvironmentBuilder().map.ROB_MAX_H
+# test_environment = TestEnvironmentBuilder().make_dog_environment()
+# obs_map = TestEnvironmentBuilder().map.obstacle_map_adaptive_h
+# voxel_size = TestEnvironmentBuilder().map.voxel_size
+# robot_max_h = TestEnvironmentBuilder().map.ROB_MAX_H
+
+environment_builder = TestEnvironmentBuilder()
+obs_map = environment_builder.get_map()[0]
+voxel_size = environment_builder.get_map()[1]
+robot_max_h = environment_builder.get_map()[2]
+
+test_environment = environment_builder.make_dog_environment()
+
 # test_environment = TestEnvironmentBuilder().make_car_environment()
 obstacle_points = test_environment.obstacle_points
 # collision_checker = CircleDirectedCollisionChecker(0.3, (0, 3, 0, 3))
 # collision_checker = RectangleCollisionChecker((-0.2, 0.2, -0.2, 0.2), (0, 3, 0, 3))
-collision_checker = RectangleCollisionChecker((-0.05, 0.05, -0.05, 0.05), (0, 5, 0, 5))
+collision_checker = RectangleCollisionChecker((-0.1, 0.1, -0.1, 0.1), (0, 5, 0, 5))
 collision_checker.update_obstacle_points(test_environment.obstacle_points)
 
 planner = PlannerFactory.make_constrained_onf_planner(collision_checker, planner_parameters)
@@ -118,17 +128,17 @@ for i in range(1000):
             dist = distance(trajectory[j][0], trajectory[j][1],
                     prev_trajectory[j][0], prev_trajectory[j][1])
             
-            if dist <= 0.0002 and any(path_color) != "red":
+            if dist <= 0.001 and any(path_color) != "red":
                 count += 1
                 print("Distance:", dist)
-                if count > 50:  
+                if count > 80:  
                     break
 
         else:
             prev_trajectory = trajectory
             continue
         prev_trajectory = trajectory
-        print(i)
+        # print(i)
         print(f"Planner run took: {time.time() - start} seconds")
         break
     else:

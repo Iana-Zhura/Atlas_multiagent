@@ -14,7 +14,7 @@ def create_dir(directory:str):
 def parse_initial_dataset(path: str):
     files = glob.glob(f'{path}*[0-9].txt')
     files = sorted(files, key=lambda x:int(re.findall("(\d+)",x)[-1]))
-
+    # print(files)
     poses = np.zeros((len(files),7))
     coords = np.zeros((len(files),3))
     angles = np.zeros((len(files),4))
@@ -36,14 +36,14 @@ def parse_initial_dataset(path: str):
         
    
     coords = poses[:,:3]
-    
+    print(coords[:,0])
     x_min = np.min(coords[:,0])
     y_min = np.min(coords[:,1])
     z_min = np.min(coords[:,2])
     coords_min = coords.min(axis=0)
     # print(x_min)
-    coords[:,0] = coords[:,0] - x_min + 2.5
-    coords[:,1] = coords[:,1] - y_min  + 2.5
+    coords[:,0] = coords[:,0] - x_min + 2
+    coords[:,1] = coords[:,1] - y_min  + 2
     coords[:,2] = coords[:,2] + 1
     # coords = coords + 2
     print(np.where(coords < 0)[0])
@@ -168,10 +168,10 @@ def rescale(coord):
     
 
 def main():
-    outdir = '/home/iana/anaconda3/Atlas/src/render/scripts/DATAROOT/sample/sample1/'
+    outdir = '/home/iana/anaconda3/Atlas/src/3D_reconstruction/render/scripts/DATAROOT/sample/sample1/'
     # outdir = '/home/iana/temp_dataset/poses/'
-    indir = '/home/iana/Atlas/dataset_drop_mats_only/poses_raw/'
-    # indir = '/home/iana/temp_dataset/poses/'
+    indir = '/home/iana/Atlas/dataset_drone_dog/dataset/poses_raw/'
+    # indir = '/home/iana/Atlas/dataset_new_arch/poses_raw/'
     prepare_data(indir, outdir)
    
 main()

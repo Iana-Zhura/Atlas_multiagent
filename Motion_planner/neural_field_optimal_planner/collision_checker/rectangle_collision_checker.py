@@ -27,7 +27,7 @@ class RectangleCollisionChecker(CollisionChecker):
 
     def _calculate_transformed_obstacle_points(self, positions):
         positions = positions.inv()
-        print(self._obstacle_points.shape)
+        # print(self._obstacle_points.shape)
         x, y = self._obstacle_points.T
         x1 = x[None, :] * np.cos(positions.rotation[:, None]) - y[None, :] * np.sin(
             positions.rotation[:, None]) + positions.x[:, None]

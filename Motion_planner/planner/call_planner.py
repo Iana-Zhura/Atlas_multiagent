@@ -22,8 +22,9 @@ class CallPlanner(Node):
         self.get_logger().info('I heard: "%d"' % msg.data)
         path_dir = os.getcwd()
         if msg.data == True and self.is_heard == False:
-            os.chmod(os.path.join(path_dir, "src/Motion_planner/planner/planner/scripts", "planner.sh"), 0o755)
-            self.exit_code = call(os.path.join(path_dir, "src/Motion_planner/planner/planner/scripts", "planner.sh"), shell=True)
+            print("Hi from planner")
+            os.chmod(os.path.join(path_dir, "src/Motion_planner/planner/scripts", "planner.sh"), 0o755)
+            self.exit_code = call(os.path.join(path_dir, "src/Motion_planner/planner/scripts", "planner.sh"), shell=True)
             print(self.exit_code)
             self.is_heard = True
 
