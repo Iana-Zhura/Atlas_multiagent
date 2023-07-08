@@ -10,8 +10,8 @@ cur_path = os.getcwd()
 
 class TestEnvironmentBuilder(object):
     def __init__(self) -> None:
-        self.path_ply = 'results/release/semseg/test_final/sample1.ply'
-        self.path_npz = 'results/release/semseg/test_final/sample1.npz'
+        self.path_ply = 'results/release/semseg/sample200.ply'
+        self.path_npz = 'results/release/semseg/sample200.npz'
         self.map = OBSTACLE_MAP(self.path_ply, self.path_npz)
 
     
@@ -101,8 +101,15 @@ class TestEnvironmentBuilder(object):
     def make_dog_environment(self):
         # goal_point = np.array([4.4, 4.8, 0], dtype=np.float32)
         # start_point = np.array([4, 1.8, 0], dtype=np.float32)
-        start_point = np.array([4.0, 2.0, 0], dtype=np.float32)
-        goal_point = np.array([3.6, 3.6, 0], dtype=np.float32)
+
+        "_________________Under arch______________"
+        # start_point = np.array([2.6, 2.0, 0], dtype=np.float32)
+        # goal_point = np.array([3.6, 3.8, 0], dtype=np.float32)
+        "_________________Through tables______________"
+        # start_point = np.array([5.6, 2.6, 0], dtype=np.float32)
+        # goal_point = np.array([6.3, 4.0, 0], dtype=np.float32)
+        start_point = np.array([3.3, 1.5, 0], dtype=np.float32)
+        goal_point = np.array([4.8, 6.0, 0], dtype=np.float32)
         print("______________________________________________")
         print("The start point is:",start_point)
         trajectory_boundaries = (1., 8, 1., 8)

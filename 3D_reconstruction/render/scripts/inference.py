@@ -78,7 +78,7 @@ def process(info_file, model, num_frames, save_path, total_scenes_index, total_s
     torch.cuda.empty_cache()
 
     # scene_ = trimesh.Scene()
-   
+    path_dir = os.getcwd()
     for j, d in enumerate(dataloader):
         
         # logging progress
@@ -113,8 +113,10 @@ def process(info_file, model, num_frames, save_path, total_scenes_index, total_s
             else:
                 mesh_pred = tsdf_pred.get_mesh()
 
-
+            mesh_pred.show()
             mesh_pred = tsdf_pred.get_mesh('semseg')
+            tsdf_pred.save(os.path.join(path_dir, 'results/release/semseg/', f'sample{j}.npz'))
+            mesh_pred.export(os.path.join(path_dir, 'results/release/semseg/', f'sample{j}.ply'))
             tsdf_pred.save(os.path.join(save_path, '%s.npz'%scene))
             mesh_pred.export(os.path.join(save_path, '%s.ply' % scene))
             mesh_pred.export(os.path.join(save_path, '%s.obj' % scene)) 

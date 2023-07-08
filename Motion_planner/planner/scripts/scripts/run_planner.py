@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 from pytorch_lightning.utilities import AttributeDict
 import time
 import sys
-
+import os
 import neural_field_optimal_planner
 # sys.path.insert(1,'~/anaconda3/Atlas/install/planner/lib/python3.8/site-packages/planner/scripts/neural_field_optimal_planner')
 # sys.path.append('~/anaconda3/Atlas/src/Motion_planner/planner/planner/scripts/neural_field_optimal_planner')
@@ -19,7 +19,7 @@ from neural_field_optimal_planner.plotting_utils import *
 from neural_field_optimal_planner.test_environment_builder import TestEnvironmentBuilder
 from neural_field_optimal_planner.trajectory_3D import trajectory_to_3D
 from neural_field_optimal_planner.trajectory_3D import calculate_path
-
+from neural_field_optimal_planner.trajectory_2D import trajectory_to_2D
 
 torch.random.manual_seed(100)
 np.random.seed(400)
@@ -84,7 +84,7 @@ test_environment = environment_builder.make_dog_environment()
 obstacle_points = test_environment.obstacle_points
 # collision_checker = CircleDirectedCollisionChecker(0.3, (0, 3, 0, 3))
 # collision_checker = RectangleCollisionChecker((-0.2, 0.2, -0.2, 0.2), (0, 3, 0, 3))
-collision_checker = RectangleCollisionChecker((-0.1, 0.1, -0.1, 0.1), (0, 5, 0, 5))
+collision_checker = RectangleCollisionChecker((-0.05, 0.05, -0.05, 0.05), (0, 5, 0, 5))
 collision_checker.update_obstacle_points(test_environment.obstacle_points)
 
 planner = PlannerFactory.make_constrained_onf_planner(collision_checker, planner_parameters)
@@ -101,7 +101,7 @@ def distance(x1: float, y1: float, x2: float, y2: float) -> float:
     d = np.sqrt(np.power((x2 - x1), 2) + np.power((y2 - y1), 2))
     return d
 
-
+base_path = os.getcwd()
 delta = 20
 start = time.time()
 count = 0
@@ -120,7 +120,8 @@ for i in range(1000):
     # plot_nerf_opt_planner(planner)
     # plot_collision_positions(planner.checked_positions, planner.truth_collision)
     plt.pause(0.01)
-    
+    if i == 999:
+        np.save(f"{base_path}/src/Motion_planner/planner/scripts/Metrics/trajectory_3D.npy", trajectory)
     if i != 0:
        
         for j in range(delta,len(trajectory)-delta):
@@ -128,7 +129,7 @@ for i in range(1000):
             dist = distance(trajectory[j][0], trajectory[j][1],
                     prev_trajectory[j][0], prev_trajectory[j][1])
             
-            if dist <= 0.001 and any(path_color) != "red":
+            if dist <= 0.0004 and any(path_color) != "red":
                 count += 1
                 print("Distance:", dist)
                 if count > 80:  
@@ -140,6 +141,7 @@ for i in range(1000):
         prev_trajectory = trajectory
         # print(i)
         print(f"Planner run took: {time.time() - start} seconds")
+        np.save(f"{base_path}/src/Motion_planner/planner/scripts/Metrics/trajectory_3D.npy", trajectory)
         break
     else:
         prev_trajectory = trajectory

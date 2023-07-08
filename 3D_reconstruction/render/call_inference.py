@@ -11,7 +11,7 @@ from launch_ros.substitutions import FindPackageShare
 class Call_Atlas(Node):
 
     def __init__(self):
-        self.exit_code = 1
+        self.exit_code = 2
         super().__init__('call_atlas')
         self.subscription = self.create_subscription(
             Bool,
@@ -44,7 +44,7 @@ class Call_Atlas(Node):
        
         if self.exit_code == 0 : 
             msg.data = True
-            self.pub_render.publish(msg)
+        self.pub_render.publish(msg)
 
 
 
